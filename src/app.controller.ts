@@ -6,6 +6,11 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  getAPIHome(): string {
+    return 'Nest API Running.....';
+  }
+
+  @Get('/hello')
   getHello(): string {
     return this.appService.getHello();
   }
