@@ -1,4 +1,5 @@
 import { Controller, Get, HttpCode, UseGuards, Version } from '@nestjs/common';
+import { JwtAdminGuard } from 'src/auth/jwt-admin.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { GlobalHelpersService } from 'src/shared/global-helpers/global-helpers.service';
 import { UtilsService } from 'src/shared/utils/utils.service';
@@ -10,7 +11,8 @@ import { UtilsService } from 'src/shared/utils/utils.service';
 
 export class CustomersController {
     constructor(private readonly utilsService: UtilsService, private readonly globalHelpersService: GlobalHelpersService){}
-
+    
+    @UseGuards(JwtAdminGuard)
     @Get('getthaidate')
     @HttpCode(200)
     getThaiDate() {

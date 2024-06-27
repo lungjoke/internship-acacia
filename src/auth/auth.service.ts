@@ -64,4 +64,23 @@ export class AuthService {
         };
 
     }
+
+
+    //get user profile 
+    async getProfile(userId:number){
+        const user = await this.prismaservice.user.findUnique({
+            where:{id:userId},
+            select:{
+                id:true,
+                name:true,
+                permission:true,
+                Profile:{
+                    select:{
+                        bio:true
+                    }
+                },
+            }
+        });
+        return user;
+    }
 }
