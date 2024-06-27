@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { PrismaService } from 'src/shared/db/prisma/prisma.service';
+import { Categories } from '@prisma/client';
 
 @Injectable()
 export class CategoriesService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(private readonly prismaservice: PrismaService) { }
+
+
+  async create(createCategoryDto: CreateCategoryDto) {
+    const categories = await this.prismaservice.categories.create({
+      data: createCategoryDto
+    });
+    return categories;
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  async findAll(): Promise<Categories[]> {
+    const categories = await this.prismaservice.categories.findMany({
+      orderBy: { id: `desc` }
+    });
+    return categories;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    const categories = await this.prismaservice.categories.findUnique({
+      where: { id: id }
+    });
+    if (!categories) {
+      throw new NotFoundException('ไม่พบรายการนี้ในระบบ');
+    }
+    return categories;
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+    await this.findOne(id);
+    const categories = await this.prismaservice.categories.update({
+      where: { id: id }, 
+      data: updateCategoryDto
+    });
+    return categories;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+
+  async remove(id: number) {
+    await this.findOne(id);
+    const categories = await this.prismaservice.categories.delete({
+      where: { id: id }
+    });
+    return categories;
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, HttpCode } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -11,8 +11,14 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
+  @HttpCode(201)
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const categories =  await this.categoriesService.create(createCategoryDto
+    );
+    return {
+      message:'`เพิ่มข้อมูลสำเร็จ',
+      data:categories
+    };
   }
 
   @Get()
@@ -21,8 +27,8 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id: number) {
+    return this.categoriesService.findOne(id);
   }
 
   @Patch(':id')
@@ -30,8 +36,11 @@ export class CategoriesController {
     return this.categoriesService.update(+id, updateCategoryDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+   @Delete(':id')
+   async remove(@Param('id') id: string) {
+    await this.categoriesService.remove(+id);
+    return{
+      message:'ลบข้อมูบสำเร็จ'
+    }
   }
 }
