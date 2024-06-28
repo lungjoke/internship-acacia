@@ -18,7 +18,7 @@ export class CategoriesService {
 
   async findAll(): Promise<Categories[]> {
     const categories = await this.prismaservice.categories.findMany({
-      orderBy: { id: `desc` }
+      orderBy: { id: `asc` }
     });
     return categories;
   }

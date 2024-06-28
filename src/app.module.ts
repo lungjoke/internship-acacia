@@ -8,12 +8,15 @@ import { CategoriesModule } from './categories/categories.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './shared/db/prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { EventsModule } from './events/events.module';
+import { NotiModule } from './noti/noti.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 
 @Module({
   imports: [ConfigModule.forRoot(),
-    CustomersModule, GlobalHelpersModule, UtilsModule, CategoriesModule, PrismaModule, AuthModule],
+    CustomersModule, GlobalHelpersModule, UtilsModule, CategoriesModule, PrismaModule, AuthModule, EventsModule, NotiModule,ScheduleModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })
